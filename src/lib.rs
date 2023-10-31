@@ -1,4 +1,4 @@
-use chrono::{DateTime, Datelike, Utc};
+use chrono::{DateTime, Datelike, Local};
 use std::fs;
 use std::path::Path;
 
@@ -26,7 +26,7 @@ pub fn run(config: Config) {
         Action::Open => {
             match config.date_type {
                 DateType::Today => {
-                    let (dir, filepath) = datetime_to_paths(&config.home, Utc::now());
+                    let (dir, filepath) = datetime_to_paths(&config.home, Local::now());
                     create_file(&dir, &filepath, config.dry_run);
                 },
             }
@@ -34,9 +34,10 @@ pub fn run(config: Config) {
     }
 }
 
-fn datetime_to_paths(home: &String, datetime: DateTime<Utc>) -> (String, String) {
+fn datetime_to_paths(home: &String, datetime: DateTime<Local>) -> (String, String) {
     let dir = format!("{home}/{}/{:02}", datetime.year(), datetime.month());
     let filepath = format!("{dir}/{:02}.md", datetime.day());
+    println!("Creating path: {filepath}");
     
     (dir, filepath)
 }
